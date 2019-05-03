@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.4.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.atech</groupId>
+	<artifactId>spreact</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>spreact</name>
+	<description>React front end Spring Boot backend</description>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<frontendSrcDir>${project.basedir}/frontend</frontendSrcDir>
+		<node.version>v10.15.3</node.version>
+		<yarn.version>v1.7.0</yarn.version>
+		<npm.version>6.4.1</npm.version>
+		<frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!-- 1. used for local installation of node and npm 
+				 2. to install dependencies with npm install 
+				 3. building the application 
+			-->
+			<plugin>
+			    <groupId>com.github.eirslett</groupId>
+			    <artifactId>frontend-maven-plugin</artifactId>
+			    <version>${frontend-maven-plugin.version}</version>
+			
+			    <configuration>
+			        <nodeVersion>${node.version}</nodeVersion>
+			        <npmVersion>${npm.version}</npmVersion>
+			        <workingDirectory>${frontendSrcDir}</workingDirectory>
+			        <installDirectory>${project.build.directory}</installDirectory>
+			    </configuration>
+				
+			    <!--  This is for NPM -->
+			    <executions>
+					<execution>
+						<id>Install node and npm locally to the project</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>Build frontend</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>run build</arguments>
+						</configuration>
+					</execution>
+				</executions>
+				
+				<!--  This is for yarn
+			    <executions>
+			        <execution>
+			            <id>install-frontend-tools</id>
+			            <goals>
+			                <goal>install-node-and-yarn</goal>
+			            </goals>
+			        </execution>
+			
+			        <execution>
+			            <id>yarn-install</id>
+			            <goals>
+			                <goal>yarn</goal>
+			            </goals>
+			            <configuration>
+			                <arguments>install</arguments>
+			            </configuration>
+			        </execution>
+			
+			        <execution>
+			            <id>build-frontend</id>
+			            <goals>
+			                <goal>yarn</goal>
+			            </goals>
+			            <phase>prepare-package</phase>
+			            <configuration>
+			                <arguments>build</arguments>
+			            </configuration>
+			        </execution>
+			    </executions>
+			    -->
+			</plugin>
+			
+			<!-- Stage React build output into final location using this plug-in. This adds an execution of the 
+				 built-in resources plugin to copy over the React build output from frontend/build into the /static 
+				 path of the jar’s staging directory, target/classes -->
+		    <plugin>
+			    <artifactId>maven-resources-plugin</artifactId>			    
+			    <executions>
+			        <execution>
+			            <id>position-react-build</id>
+			            <goals>
+			                <goal>copy-resources</goal>
+			            </goals>
+			            <phase>prepare-package</phase>
+			            <configuration>
+			                <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+			                <resources>
+			                    <resource>
+			                        <directory>${frontendSrcDir}/build</directory>
+			                        <filtering>false</filtering>
+			                    </resource>
+			                </resources>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
