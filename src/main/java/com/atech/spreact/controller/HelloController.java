@@ -10,7 +10,7 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello() {
-        return "Welcome to react development ReactFE SpringPE";
+        return "Welcome to react development (Project Structure for ReactFE SpringPE)";
     }
 
 }
